@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Smart Focus User Profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "plan": { "type": "string", "enum": ["free", "premium", "lifetime"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "plan", "created_at"]
+    },
+    "Session": {
+      "title": "Focus Session",
+      "description": "A deep work or focus session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "start_time": { "type": "string", "format": "date-time" },
+        "end_time": { "type": "string", "format": "date-time" },
+        "mode": { "type": "string", "enum": ["deep", "light", "meeting"] },
+        "focus_score": { "type": "number" }
+      },
+      "required": ["id", "user_id", "start_time", "mode"]
+    },
+    "DistractionEvent": {
+      "title": "Distraction Event",
+      "description": "Logged event when a user visits a distracting site",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "url": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "intent": { "type": "string", "enum": ["work", "break", "unknown"] },
+        "action": { "type": "string", "enum": ["allowed", "blocked", "delayed"] }
+      },
+      "required": ["id", "user_id", "url", "timestamp", "intent", "action"]
+    },
+    "PainMomentEvent": {
+      "title": "Pain Moment Event",
+      "description": "Triggered when a user exceeds distraction limits",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "trigger_count": { "type": "number" },
+        "domain": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "reaction": { "type": "string", "enum": ["upgrade_clicked", "back_to_focus", "ignored"] }
+      },
+      "required": ["id", "user_id", "trigger_count", "domain", "timestamp"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "users/{userId}/sessions/{sessionId}": {
+      "schema": "Session",
+      "description": "User focus sessions"
+    },
+    "users/{userId}/distractions/{eventId}": {
+      "schema": "DistractionEvent",
+      "description": "Logged distraction events"
+    },
+    "users/{userId}/pain_moments/{eventId}": {
+      "schema": "PainMomentEvent",
+      "description": "Logged pain moment triggers"
+    }
+  }
+}
